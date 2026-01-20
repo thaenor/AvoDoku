@@ -10,7 +10,6 @@ export const Controls: React.FC = () => {
 
   // --- Action Button Styles ---
   const baseButton = "px-4 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-md transition-all duration-300 font-medium";
-  const primaryButton = `${baseButton} bg-blue-500 text-white hover:bg-blue-600`;
   const secondaryButton = `${baseButton} bg-gray-200 text-gray-800 hover:bg-gray-300`;
   const disabledButton = "opacity-50 cursor-not-allowed";
 

@@ -51,7 +51,7 @@ const generateEmptyGrid = (): Grid =>
  * Placeholder for a function that generates a new Sudoku puzzle.
  * For now, it returns a simple pre-filled grid.
  */
-const generateNewPuzzle = (difficulty: Difficulty): Grid => {
+const generateNewPuzzle = (_difficulty: Difficulty): Grid => {
     // In a real implementation, you would use a Sudoku generation algorithm.
     // This is a placeholder with a simple puzzle.
     const grid = generateEmptyGrid();
@@ -195,7 +195,7 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
     // 2. Check Columns
     for (let c = 0; c < 9; c++) {
         const colCells = [];
-        const originalIndices = [];
+        const originalIndices: {r: number, c: number}[] = [];
         for (let r = 0; r < 9; r++) {
             colCells.push(newGrid[r][c]);
             originalIndices.push({r, c});
@@ -224,7 +224,7 @@ export const useGameStore = create<GameState & GameActions>((set, get) => ({
     for (let boxRow = 0; boxRow < 3; boxRow++) {
       for (let boxCol = 0; boxCol < 3; boxCol++) {
         const squareCells = [];
-        const originalIndices = [];
+        const originalIndices: {r: number, c: number}[] = [];
         for (let r = boxRow * 3; r < boxRow * 3 + 3; r++) {
           for (let c = boxCol * 3; c < boxCol * 3 + 3; c++) {
             squareCells.push(newGrid[r][c]);

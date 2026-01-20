@@ -1,13 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Board } from './Board';
 import { Controls } from './Controls';
 import { useGameStore } from './useGameStore';
 
 function App() {
-  const { newGame, difficulty: currentDifficulty } = useGameStore();
+  const { newGame, difficulty: currentDifficulty, setCellValue } = useGameStore();
   const [selectedDifficulty, setSelectedDifficulty] = useState<
     'Easy' | 'Medium' | 'Hard'
   >(currentDifficulty);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const { key } = event;
+
+      // Check for numbers 1-9
+      if (/^[1-9]$/.test(key)) {
+        setCellValue(parseInt(key, 10));
+      }
+      // Check for Backspace or Delete to clear cell
+      else if (key === 'Backspace' || key === 'Delete') {
+        setCellValue(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [setCellValue]);
 
   const handleNewGame = () => {
     newGame(selectedDifficulty);

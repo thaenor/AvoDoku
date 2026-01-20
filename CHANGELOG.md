@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-01-20
+
+### Added
+-   **Keyboard Support**:
+    -   Implemented global keyboard event listeners in `App.tsx`.
+    -   Users can now type numbers `1-9` to input values into the selected cell.
+    -   Users can press `Backspace` or `Delete` keys to clear the selected cell.
+
+### Fixed
+-   **Build Configuration**:
+    -   Created a missing `tsconfig.json` to properly configure the TypeScript compiler for the Vite/React environment.
+-   **Code Quality**:
+    -   Resolved an unused variable warning in `Controls.tsx` (`primaryButton`).
+    -   Fixed implicit `any` type errors and unused parameter warnings in `useGameStore.ts` to ensure a clean build.
+
 ## [0.1.0] - 2026-01-20
 
 ### Added
