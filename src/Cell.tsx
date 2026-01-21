@@ -38,20 +38,29 @@ export const Cell: React.FC<CellProps> = ({
     cellClasses.push('font-normal', 'text-text-user');
   }
 
-  if (isSelected && !isError) {
-    cellClasses.push('bg-cell-selected');
-  } else if (isRelated && !isError) {
+  // --- State Styles ---
+  if (isSelected) {
+    // High contrast selection: dark background, white text, and a thick inset ring
+    cellClasses.push('bg-cell-selected', '!text-cell-selected-text', 'ring-4', 'ring-inset', 'ring-blue-600', 'z-10');
+  } else if (isError) {
+    cellClasses.push('bg-error-bg', 'text-error-text');
+  } else if (isRelated) {
     cellClasses.push('bg-cell-related');
-  }
-
-  if (isError) {
-    cellClasses.push('bg-error-soft');
   }
 
   // --- Render ---
   return (
-    <div className={cellClasses.join(' ')} onClick={onClick}>
+    <button
+      className={cellClasses.join(' ')}
+      onClick={onClick}
+      aria-label={value ? `Valor ${value}` : 'Célula vazia'}
+      aria-selected={isSelected}
+      aria-invalid={isError}
+      aria-readonly={isGiven}
+      role="gridcell"
+      type="button"
+    >
       {value}
-    </div>
+    </button>
   );
 };

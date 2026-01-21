@@ -11,7 +11,7 @@ export const Board: React.FC = () => {
 
     const inSameRow = selected.row === row;
     const inSameCol = selected.col === col;
-    
+
     const selectedBoxRow = Math.floor(selected.row / 3);
     const selectedBoxCol = Math.floor(selected.col / 3);
     const currentBoxRow = Math.floor(row / 3);
@@ -22,38 +22,44 @@ export const Board: React.FC = () => {
   }
 
   return (
-    <div className="grid grid-cols-9 border-t-4 border-l-4 border-grid-thick">
-      {grid.map((row, r_idx) =>
-        row.map((cell, c_idx) => {
-          const isCellSelected = selectedCell?.row === r_idx && selectedCell?.col === c_idx;
-          
-          const borderClasses = [
-            'border-r-2',
-            'border-b-2',
-            'border-grid-thin'
-          ];
+    <div
+      className="grid grid-cols-9 border-t-4 border-l-4 border-grid-thick"
+      role="grid"
+      aria-label="Tabuleiro de Sudoku"
+    >
+      {grid.map((row, r_idx) => (
+        <div key={`row-${r_idx}`} role="row" className="contents">
+          {row.map((cell, c_idx) => {
+            const isCellSelected = selectedCell?.row === r_idx && selectedCell?.col === c_idx;
 
-          if (c_idx === 2 || c_idx === 5) {
-            borderClasses.push('border-r-4', 'border-r-grid-thick');
-          }
-          if (r_idx === 2 || r_idx === 5) {
-            borderClasses.push('border-b-4', 'border-b-grid-thick');
-          }
+            const borderClasses = [
+              'border-r-2',
+              'border-b-2',
+              'border-grid-thin'
+            ];
 
-          return (
-            <div key={`${r_idx}-${c_idx}`} className={borderClasses.join(' ')}>
-              <Cell
-                value={cell.value}
-                isGiven={cell.isGiven}
-                isError={cell.isError}
-                isSelected={isCellSelected}
-                isRelated={isRelated(r_idx, c_idx, selectedCell)}
-                onClick={() => selectCell(r_idx, c_idx)}
-              />
-            </div>
-          );
-        })
-      )}
+            if (c_idx === 2 || c_idx === 5 || c_idx === 8) {
+              borderClasses.push('border-r-4', 'border-r-grid-thick');
+            }
+            if (r_idx === 2 || r_idx === 5 || r_idx === 8) {
+              borderClasses.push('border-b-4', 'border-b-grid-thick');
+            }
+
+            return (
+              <div key={`${r_idx}-${c_idx}`} className={borderClasses.join(' ')}>
+                <Cell
+                  value={cell.value}
+                  isGiven={cell.isGiven}
+                  isError={cell.isError}
+                  isSelected={isCellSelected}
+                  isRelated={isRelated(r_idx, c_idx, selectedCell)}
+                  onClick={() => selectCell(r_idx, c_idx)}
+                />
+              </div>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 };

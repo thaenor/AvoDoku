@@ -52,38 +52,40 @@ function App() {
         <div className="flex items-center space-x-4 justify-center">
           <button
             onClick={handleNewGame}
-            className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors shadow-md"
-            aria-label="Start a new game"
+            className="px-6 py-3 rounded-lg bg-blue-700 text-white hover:bg-blue-800 transition-colors shadow-lg font-bold text-lg border-2 border-blue-900"
+            aria-label="Começar novo jogo"
           >
-            New Game
+            Novo Jogo
           </button>
           <select
             value={selectedDifficulty}
             onChange={handleDifficultyChange}
-            className="px-4 py-2 rounded-lg bg-gray-200 text-gray-800 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors shadow-md"
-            aria-label="Select difficulty"
+            className="px-6 py-3 rounded-lg bg-white text-black border-4 border-gray-900 focus:outline-none focus:ring-4 focus:ring-blue-500 transition-colors shadow-lg font-bold text-lg"
+            aria-label="Selecionar dificuldade"
           >
-            <option value="Easy">Easy</option>
-            <option value="Medium">Medium</option>
-            <option value="Hard">Hard</option>
+            <option value="Easy">Fácil</option>
+            <option value="Medium">Médio</option>
+            <option value="Hard">Difícil</option>
           </select>
         </div>
       </header>
 
-      {/* Main Content (Board) */}
-      <main className="my-6">
-        <Board />
-      </main>
+      <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8 w-full max-w-6xl">
+        {/* Main Content (Board) */}
+        <main className="my-6">
+          <Board />
+        </main>
 
-      {/* Controls (Number Pad) */}
-      <section className="my-6">
-        <Controls />
-      </section>
+        {/* Controls (Number Pad) */}
+        <section className="my-6 lg:mt-6 w-full max-w-sm">
+          <Controls />
+        </section>
+      </div>
 
       {/* Footer */}
       <footer className="mt-8 text-center">
-        <p className="text-sm text-gray-500">
-          Select a cell, then pick a number or use the controls below.
+        <p className="text-lg font-medium text-gray-900">
+          Selecione uma célula, depois escolha um número ou use os controlos abaixo.
         </p>
       </footer>
     </div>

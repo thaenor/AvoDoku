@@ -9,9 +9,9 @@ export const Controls: React.FC = () => {
   const cellIsSelected = selectedCell !== null;
 
   // --- Action Button Styles ---
-  const baseButton = "px-4 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-md transition-all duration-300 font-medium";
-  const secondaryButton = `${baseButton} bg-gray-200 text-gray-800 hover:bg-gray-300`;
-  const disabledButton = "opacity-50 cursor-not-allowed";
+  const baseButton = "px-4 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-md transition-all duration-300 font-bold text-lg";
+  const secondaryButton = `${baseButton} bg-gray-800 text-white hover:bg-black border-2 border-black`;
+  const disabledButton = "opacity-40 cursor-not-allowed grayscale";
 
   // --- Render ---
   return (
@@ -21,18 +21,18 @@ export const Controls: React.FC = () => {
         <button
           onClick={undo}
           disabled={!canUndo}
-          aria-label="Undo last move"
+          aria-label="Desfazer última jogada"
           className={`${secondaryButton} ${!canUndo ? disabledButton : ''}`}
         >
-          Undo
+          Desfazer
         </button>
         <button
           onClick={redo}
           disabled={!canRedo}
-          aria-label="Redo move"
+          aria-label="Refazer jogada"
           className={`${secondaryButton} ${!canRedo ? disabledButton : ''}`}
         >
-          Redo
+          Refazer
         </button>
       </div>
 
@@ -43,8 +43,8 @@ export const Controls: React.FC = () => {
             key={num}
             onClick={() => setCellValue(num)}
             disabled={!cellIsSelected}
-            aria-label={`Set selected cell to ${num}`}
-            className={`w-full min-w-[50px] h-14 text-2xl font-semibold border border-gray-300 rounded-lg hover:bg-gray-100 transition-colors ${!cellIsSelected ? disabledButton : ''}`}
+            aria-label={`Definir célula selecionada como ${num}`}
+            className={`w-full min-w-[50px] h-14 text-2xl font-bold border-2 border-gray-800 rounded-lg hover:bg-gray-100 transition-colors focus:ring-4 focus:ring-blue-500 ${!cellIsSelected ? disabledButton : ''}`}
           >
             {num}
           </button>
@@ -53,18 +53,18 @@ export const Controls: React.FC = () => {
          <button
             onClick={() => setCellValue(null)}
             disabled={!cellIsSelected}
-            aria-label="Clear selected cell value"
-            className={`w-full col-span-2 h-14 text-lg font-medium border-2 border-red-400 text-red-500 rounded-lg hover:bg-red-50 transition-colors ${!cellIsSelected ? disabledButton : ''}`}
+            aria-label="Limpar valor da célula selecionada"
+            className={`w-full col-span-2 h-14 text-xl font-bold border-4 border-red-700 text-red-700 rounded-lg hover:bg-red-50 transition-colors ${!cellIsSelected ? disabledButton : ''}`}
         >
-            Clear
+            Limpar
         </button>
          {/* Hint Button (Optional) */}
          <button
-            onClick={() => alert("Hint functionality not yet implemented!")}
-            aria-label="Get a hint"
-            className={`${baseButton} w-full h-14 bg-green-500 text-white hover:bg-green-600`}
+            onClick={() => alert("Funcionalidade de dica ainda não implementada!")}
+            aria-label="Obter dica"
+            className={`${baseButton} w-full h-14 bg-green-800 text-white hover:bg-green-900 border-2 border-green-950`}
         >
-            Hint
+            Dica
         </button>
       </div>
     </div>
