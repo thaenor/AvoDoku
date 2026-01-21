@@ -62,6 +62,25 @@ const solveSudoku = (board: number[][]): boolean => {
     return true;
 };
 
+const fillGrid = (board: number[][]): boolean => {
+    for (let r = 0; r < 9; r++) {
+        for (let c = 0; c < 9; c++) {
+            if (board[r][c] === 0) {
+                const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
+                for (const num of nums) {
+                    if (isValidMove(board, r, c, num)) {
+                        board[r][c] = num;
+                        if (fillGrid(board)) return true;
+                        board[r][c] = 0;
+                    }
+                }
+                return false;
+            }
+        }
+    }
+    return true;
+};
+
 /**
  * Generates an empty 9x9 Sudoku grid.
  */
@@ -80,30 +99,40 @@ const generateEmptyGrid = (): Grid =>
     );
 
 /**
- * Placeholder for a function that generates a new Sudoku puzzle.
- * For now, it returns a simple pre-filled grid.
+ * Generates a new Sudoku puzzle based on difficulty.
  */
-const generateNewPuzzle = (_difficulty: Difficulty): Grid => {
-    // In a real implementation, you would use a Sudoku generation algorithm.
-    // This is a placeholder with a simple puzzle.
-    const grid = generateEmptyGrid();
-    const puzzle = [
-        [5, 3, null, null, 7, null, null, null, null],
-        [6, null, null, 1, 9, 5, null, null, null],
-        [null, 9, 8, null, null, null, null, 6, null],
-        [8, null, null, null, 6, null, null, null, 3],
-        [4, null, null, 8, null, 3, null, null, 1],
-        [7, null, null, null, 2, null, null, null, 6],
-        [null, 6, null, null, null, null, 2, 8, null],
-        [null, null, null, 4, 1, 9, null, null, 5],
-        [null, null, null, null, 8, null, null, 7, 9],
-    ];
+const generateNewPuzzle = (difficulty: Difficulty): Grid => {
+    // 1. Generate full board
+    const raw = Array(9).fill(null).map(() => Array(9).fill(0));
+    fillGrid(raw);
 
+    // 2. Remove cells based on difficulty
+    // Easy: ~40 cells removed
+    // Medium: ~50 cells removed
+    // Hard: ~60 cells removed
+    let cellsToRemove = 40;
+    if (difficulty === 'Medium') cellsToRemove = 50;
+    if (difficulty === 'Hard') cellsToRemove = 60;
+
+    let attempts = 0;
+    while (cellsToRemove > 0 && attempts < 200) {
+        const r = Math.floor(Math.random() * 9);
+        const c = Math.floor(Math.random() * 9);
+
+        if (raw[r][c] !== 0) {
+            raw[r][c] = 0;
+            cellsToRemove--;
+        }
+        attempts++;
+    }
+
+    // 3. Convert to state Grid
+    const grid = generateEmptyGrid();
     for(let r=0; r < 9; r++) {
         for(let c=0; c < 9; c++) {
-            if(puzzle[r][c] !== null) {
+            if(raw[r][c] !== 0) {
                 grid[r][c] = {
-                    value: puzzle[r][c],
+                    value: raw[r][c],
                     isGiven: true,
                     isError: false,
                     notes: []
@@ -356,7 +385,7 @@ export const useGameStore = create<GameState & GameActions>()(
 
         // 4. Apply the hint
         if (targetRow !== -1 && targetCol !== -1) {
-          const { setCellValue, selectCell } = get();
+          const { selectCell } = get();
           // Select the cell if not already
           if (
             !selectedCell ||
