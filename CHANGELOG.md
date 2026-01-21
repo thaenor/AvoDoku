@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6] - 2026-01-21
+
+### Added
+-   **Notes Mode (Pencil Marks)**:
+    -   Implemented a "Notes" mode allowing users to annotate empty cells with potential numbers.
+    -   **Controls**: Added a "Notas: ON/OFF" toggle button and bound the `N` key as a keyboard shortcut.
+    -   **Styling**: Integrated the "Caveat" handwriting font for a realistic pencil-mark aesthetic.
+        -   Single notes appear large and greyed out.
+        -   Multiple notes automatically resize to a 3x3 mini-grid within the cell.
+    -   **Logic**: Entering a definitive value automatically clears any notes in that cell.
+
 ## [0.1.5] - 2026-01-21
 
 ### Improved

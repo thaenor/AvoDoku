@@ -6,7 +6,9 @@ interface CellProps {
   isGiven: boolean;
   isSelected: boolean;
   isRelated: boolean;
+  isHighlighted: boolean;
   isError: boolean;
+  notes?: number[];
   onClick: () => void;
 }
 
@@ -16,7 +18,9 @@ export const Cell: React.FC<CellProps> = ({
   isGiven,
   isSelected,
   isRelated,
+  isHighlighted,
   isError,
+  notes = [],
   onClick,
 }) => {
   // --- Style Calculation ---
@@ -26,11 +30,16 @@ export const Cell: React.FC<CellProps> = ({
     'justify-center',
     'w-[60px]',
     'h-[60px]',
-    'text-3xl',
     'cursor-pointer',
     'transition-colors',
     'duration-150',
+    'relative', // Needed for absolute positioning of notes
   ];
+
+  // Font size - large for values, handled differently for notes
+  if (value !== null) {
+      cellClasses.push('text-3xl');
+  }
 
   if (isGiven) {
     cellClasses.push('font-bold', 'text-text-given');
@@ -44,6 +53,8 @@ export const Cell: React.FC<CellProps> = ({
     cellClasses.push('bg-cell-selected', '!text-cell-selected-text', 'ring-4', 'ring-inset', 'ring-blue-600', 'z-10');
   } else if (isError) {
     cellClasses.push('bg-error-bg', 'text-error-text');
+  } else if (isHighlighted) {
+    cellClasses.push('bg-blue-300'); // distinct from cell-related
   } else if (isRelated) {
     cellClasses.push('bg-cell-related');
   }
@@ -61,6 +72,30 @@ export const Cell: React.FC<CellProps> = ({
       type="button"
     >
       {value}
+
+      {/* Notes Overlay */}
+      {value === null && notes.length > 0 && (
+        <>
+            {/* Single Note: Large, Handwritten, Grey */}
+            {notes.length === 1 && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span className="text-4xl text-gray-400 font-handwriting font-bold">
+                        {notes[0]}
+                    </span>
+                </div>
+            )}
+             {/* Multiple Notes: Grid, Handwritten, Smaller */}
+            {notes.length > 1 && (
+                 <div className="grid grid-cols-3 grid-rows-3 w-full h-full pointer-events-none p-0.5">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
+                        <div key={num} className="flex items-center justify-center text-[10px] sm:text-xs font-handwriting font-bold text-gray-500 leading-none">
+                            {notes.includes(num) ? num : ''}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </>
+      )}
     </button>
   );
 };

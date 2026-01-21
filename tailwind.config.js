@@ -19,6 +19,9 @@ module.exports = {
         'error-bg': '#FEE2E2',
         'error-text': '#991B1B',
       },
+      fontFamily: {
+        handwriting: ['Caveat', 'cursive'],
+      },
     },
   },
   plugins: [],

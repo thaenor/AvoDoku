@@ -20,7 +20,9 @@ export const Board: React.FC = () => {
 
     return inSameRow || inSameCol || inSameBox;
   }
-
+  const selectedValue = selectedCell
+    ? grid[selectedCell.row][selectedCell.col].value
+    : null;
   return (
     <div
       className="grid grid-cols-9 border-t-4 border-l-4 border-grid-thick"
@@ -53,6 +55,8 @@ export const Board: React.FC = () => {
                   isError={cell.isError}
                   isSelected={isCellSelected}
                   isRelated={isRelated(r_idx, c_idx, selectedCell)}
+                  isHighlighted={cell.value !== null && selectedValue !== null && cell.value === selectedValue}
+                  notes={cell.notes}
                   onClick={() => selectCell(r_idx, c_idx)}
                 />
               </div>

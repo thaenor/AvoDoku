@@ -2,7 +2,7 @@ import React from 'react';
 import { useGameStore } from './useGameStore';
 
 export const Controls: React.FC = () => {
-  const { setCellValue, undo, redo, history, future, selectedCell, getHint } = useGameStore();
+  const { setCellValue, undo, redo, history, future, selectedCell, getHint, isNoteMode, toggleNoteMode } = useGameStore();
 
   const canUndo = history.length > 0;
   const canRedo = future.length > 0;
@@ -18,6 +18,14 @@ export const Controls: React.FC = () => {
     <div className="flex flex-col gap-4 p-4">
       {/* --- Action Buttons --- */}
       <div className="grid grid-cols-2 gap-3">
+        <button
+            onClick={toggleNoteMode}
+            className={`${baseButton} ${isNoteMode ? 'bg-yellow-500 text-black border-yellow-800 ring-4 ring-yellow-400' : 'bg-gray-200 text-gray-800 border-gray-400 hover:bg-gray-300'}`}
+            aria-label={isNoteMode ? "Modo de Notas Ligado" : "Modo de Notas Desligado"}
+            aria-pressed={isNoteMode}
+        >
+            {isNoteMode ? "Notas: ON ✎" : "Notas: OFF"}
+        </button>
         <button
           onClick={undo}
           disabled={!canUndo}

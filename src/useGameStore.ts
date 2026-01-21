@@ -28,6 +28,7 @@ type GameState = {
   isWon: boolean;
   elapsedTime: number; // Time in seconds
   completedGames: GameRecord[];
+  isNoteMode: boolean;
 };
 
 type GameActions = {
@@ -39,6 +40,7 @@ type GameActions = {
   checkErrors: () => void;
   getHint: () => void;
   incrementTime: () => void;
+  toggleNoteMode: () => void;
 };
 
 // --- Helper Functions ---
@@ -168,14 +170,19 @@ export const useGameStore = create<GameState & GameActions>()(
       isWon: false,
       elapsedTime: 0,
       completedGames: [],
+      isNoteMode: false,
 
       // --- Actions ---
       selectCell: (row, col) => {
         set({ selectedCell: { row, col } });
       },
 
+      toggleNoteMode: () => {
+        set((state) => ({ isNoteMode: !state.isNoteMode }));
+      },
+
       setCellValue: (value) => {
-        const { grid, selectedCell } = get();
+        const { grid, selectedCell, isNoteMode } = get();
         if (!selectedCell) return;
 
         const { row, col } = selectedCell;
@@ -190,10 +197,41 @@ export const useGameStore = create<GameState & GameActions>()(
         }));
 
         const newGrid = JSON.parse(JSON.stringify(grid)); // Deep copy
-        newGrid[row][col].value = value;
+
+        if (value === null) {
+            // Clear value (and maybe notes too? for now just value)
+            // Ideally clear value. If value is already null, clear notes?
+            // "Backspace" behavior:
+            if (newGrid[row][col].value !== null) {
+                newGrid[row][col].value = null;
+            } else {
+                newGrid[row][col].notes = [];
+            }
+        } else {
+            if (isNoteMode) {
+                 // Note Mode Logic
+                 if (newGrid[row][col].value === null) { // Only edit notes if cell is empty
+                     const notes = newGrid[row][col].notes;
+                     if (notes.includes(value)) {
+                         newGrid[row][col].notes = notes.filter((n: number) => n !== value);
+                     } else {
+                         newGrid[row][col].notes = [...notes, value];
+                     }
+                 }
+            } else {
+                // Value Mode Logic
+                newGrid[row][col].value = value;
+                newGrid[row][col].notes = []; // Clear notes when setting value
+            }
+        }
 
         set({ grid: newGrid });
-        get().checkErrors(); // Check for errors after setting value
+        // Only checking errors if we set a real value, not a note.
+        // Although checking errors doesn't hurt, it might mark errors.
+        // Notes shouldn't trigger "Error" state on the cell itself usually.
+        if (!isNoteMode && value !== null) {
+             get().checkErrors();
+        }
       },
 
       undo: () => {

@@ -11,7 +11,8 @@ function App() {
     setCellValue,
     isWon,
     elapsedTime,
-    incrementTime
+    incrementTime,
+    toggleNoteMode
   } = useGameStore();
 
   const [selectedDifficulty, setSelectedDifficulty] = useState<
@@ -51,6 +52,10 @@ function App() {
       else if (key === 'Backspace' || key === 'Delete') {
         setCellValue(null);
       }
+      // Toggle Note Mode with 'N'
+      else if (key.toLowerCase() === 'n') {
+        toggleNoteMode();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -58,7 +63,7 @@ function App() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [setCellValue, isWon]);
+  }, [setCellValue, isWon, toggleNoteMode]);
 
   const handleNewGame = () => {
     newGame(selectedDifficulty);
