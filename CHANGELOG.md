@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.5] - 2026-01-21
+
+### Improved
+-   **User Experience**:
+    -   The Leaderboard modal now closes when clicking on the dark background overlay, improving accessibility and ease of use.
+
+## [0.1.4] - 2026-01-21
+
+### Added
+-   **Game History**:
+    -   Implemented a `LeaderboardModal` to display a list of completed games (Date, Difficulty, Time).
+    -   Updated `useGameStore` to track `completedGames` and strictly record completions only once per game instance.
+    -   Added a "Histórico" button to the main header to access the leaderboard.
+-   **Timer**:
+    -   Added visual timer to the HUD and win screen (previously added in 0.1.3 but refined here).
+
+## [0.1.3] - 2026-01-21
+
+### Changed
+-   **Puzzle Generation**:
+    -   Replaced the static placeholder puzzle with a dynamic generator.
+    -   Implemented a randomized backtracking algorithm to create unique full boards.
+    -   Implemented a cell removal strategy based on the selected difficulty level (Easy: ~40 removed, Medium: ~50 removed, Hard: ~60 removed).
+
 ## [0.1.2] - 2026-01-21
 
 ### Added

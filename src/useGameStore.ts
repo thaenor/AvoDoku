@@ -12,6 +12,13 @@ type Cell = {
 type Grid = Cell[][];
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
+type GameRecord = {
+  id: string;
+  date: string;
+  difficulty: Difficulty;
+  time: number;
+};
+
 type GameState = {
   grid: Grid;
   selectedCell: { row: number; col: number } | null;
@@ -19,6 +26,8 @@ type GameState = {
   future: Grid[];
   difficulty: Difficulty;
   isWon: boolean;
+  elapsedTime: number; // Time in seconds
+  completedGames: GameRecord[];
 };
 
 type GameActions = {
@@ -29,6 +38,7 @@ type GameActions = {
   newGame: (difficulty: Difficulty) => void;
   checkErrors: () => void;
   getHint: () => void;
+  incrementTime: () => void;
 };
 
 // --- Helper Functions ---
@@ -156,6 +166,8 @@ export const useGameStore = create<GameState & GameActions>()(
       future: [],
       difficulty: 'Medium',
       isWon: false,
+      elapsedTime: 0,
+      completedGames: [],
 
       // --- Actions ---
       selectCell: (row, col) => {
@@ -219,6 +231,8 @@ export const useGameStore = create<GameState & GameActions>()(
           selectedCell: null,
           history: [],
           future: [],
+          isWon: false,
+          elapsedTime: 0,
         });
         get().checkErrors();
       },
@@ -331,7 +345,30 @@ export const useGameStore = create<GameState & GameActions>()(
           }
         }
 
-        set({ grid: newGrid, isWon: !errorFound && !emptyFound });
+        const newIsWon = !errorFound && !emptyFound;
+        const { isWon, completedGames, difficulty, elapsedTime } = get();
+
+        if (newIsWon && !isWon) {
+           set({
+              grid: newGrid,
+              isWon: true,
+              completedGames: [
+                  {
+                      id: crypto.randomUUID(),
+                      date: new Date().toISOString(),
+                      difficulty,
+                      time: elapsedTime
+                  },
+                  ...completedGames
+              ]
+           });
+        } else {
+           set({ grid: newGrid, isWon: newIsWon });
+        }
+      },
+
+      incrementTime: () => {
+        set((state) => ({ elapsedTime: state.elapsedTime + 1 }));
       },
 
       getHint: () => {
@@ -427,6 +464,8 @@ export const useGameStore = create<GameState & GameActions>()(
         future: state.future,
         difficulty: state.difficulty,
         isWon: state.isWon,
+        elapsedTime: state.elapsedTime,
+        completedGames: state.completedGames,
         // We probably don't want to persist 'selectedCell' as that might be weird on reload
       }),
     }

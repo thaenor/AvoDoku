@@ -2,12 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { Board } from './Board';
 import { Controls } from './Controls';
 import { useGameStore } from './useGameStore';
+import { LeaderboardModal } from './LeaderboardModal';
 
 function App() {
-  const { newGame, difficulty: currentDifficulty, setCellValue, isWon } = useGameStore();
+  const {
+    newGame,
+    difficulty: currentDifficulty,
+    setCellValue,
+    isWon,
+    elapsedTime,
+    incrementTime
+  } = useGameStore();
+
   const [selectedDifficulty, setSelectedDifficulty] = useState<
     'Easy' | 'Medium' | 'Hard'
   >(currentDifficulty);
+  const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
+
+  // Timer Effect
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    if (!isWon) {
+      interval = setInterval(() => {
+        incrementTime();
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isWon, incrementTime]);
+
+  // Format time as MM:SS
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     if (isWon) return; // Disable controls if game is won
@@ -52,6 +80,16 @@ function App() {
           AvoDoku
         </h1>
         <div className="flex items-center space-x-4 justify-center">
+          <div className="px-6 py-3 rounded-lg bg-gray-800 text-white font-mono text-xl border-2 border-black shadow-lg" aria-label={`Tempo decorrido: ${formatTime(elapsedTime)}`}>
+            {formatTime(elapsedTime)}
+          </div>
+          <button
+            onClick={() => setIsLeaderboardOpen(true)}
+            className="px-6 py-3 rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-colors shadow-lg font-bold text-lg border-2 border-purple-900"
+            aria-label="Ver histórico de jogos"
+          >
+            Histórico
+          </button>
           <button
             onClick={handleNewGame}
             className="px-6 py-3 rounded-lg bg-blue-700 text-white hover:bg-blue-800 transition-colors shadow-lg font-bold text-lg border-2 border-blue-900"
@@ -91,6 +129,12 @@ function App() {
         </p>
       </footer>
 
+      {/* Leaderboard Modal */}
+      <LeaderboardModal
+        isOpen={isLeaderboardOpen}
+        onClose={() => setIsLeaderboardOpen(false)}
+      />
+
       {/* Victory Modal */}
       {isWon && (
         <div
@@ -106,8 +150,11 @@ function App() {
             >
               Parabéns!
             </h2>
-            <p className="text-xl font-bold text-gray-800 mb-8">
+            <p className="text-xl font-bold text-gray-800 mb-2">
               Concluiu o Sudoku com sucesso!
+            </p>
+            <p className="text-lg font-medium text-gray-600 mb-8">
+              Tempo: {formatTime(elapsedTime)}
             </p>
             <button
               onClick={handleNewGame}
