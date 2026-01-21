@@ -4,12 +4,14 @@ import { Controls } from './Controls';
 import { useGameStore } from './useGameStore';
 
 function App() {
-  const { newGame, difficulty: currentDifficulty, setCellValue } = useGameStore();
+  const { newGame, difficulty: currentDifficulty, setCellValue, isWon } = useGameStore();
   const [selectedDifficulty, setSelectedDifficulty] = useState<
     'Easy' | 'Medium' | 'Hard'
   >(currentDifficulty);
 
   useEffect(() => {
+    if (isWon) return; // Disable controls if game is won
+
     const handleKeyDown = (event: KeyboardEvent) => {
       const { key } = event;
 
@@ -28,7 +30,7 @@ function App() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [setCellValue]);
+  }, [setCellValue, isWon]);
 
   const handleNewGame = () => {
     newGame(selectedDifficulty);
@@ -88,6 +90,35 @@ function App() {
           Selecione uma célula, depois escolha um número ou use os controlos abaixo.
         </p>
       </footer>
+
+      {/* Victory Modal */}
+      {isWon && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-labelledby="victory-title"
+          aria-modal="true"
+        >
+          <div className="bg-white p-8 rounded-xl shadow-2xl max-w-md w-full text-center border-4 border-green-600">
+            <h2
+              id="victory-title"
+              className="text-4xl font-extrabold text-green-700 mb-4"
+            >
+              Parabéns!
+            </h2>
+            <p className="text-xl font-bold text-gray-800 mb-8">
+              Concluiu o Sudoku com sucesso!
+            </p>
+            <button
+              onClick={handleNewGame}
+              className="w-full px-6 py-4 rounded-lg bg-green-700 text-white hover:bg-green-800 transition-colors shadow-lg font-bold text-xl border-2 border-green-900 focus:ring-4 focus:ring-green-500"
+              autoFocus
+            >
+              Novo Jogo
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

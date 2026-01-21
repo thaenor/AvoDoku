@@ -2,7 +2,7 @@ import React from 'react';
 import { useGameStore } from './useGameStore';
 
 export const Controls: React.FC = () => {
-  const { setCellValue, undo, redo, history, future, selectedCell } = useGameStore();
+  const { setCellValue, undo, redo, history, future, selectedCell, getHint } = useGameStore();
 
   const canUndo = history.length > 0;
   const canRedo = future.length > 0;
@@ -60,7 +60,7 @@ export const Controls: React.FC = () => {
         </button>
          {/* Hint Button (Optional) */}
          <button
-            onClick={() => alert("Funcionalidade de dica ainda não implementada!")}
+            onClick={getHint}
             aria-label="Obter dica"
             className={`${baseButton} w-full h-14 bg-green-800 text-white hover:bg-green-900 border-2 border-green-950`}
         >

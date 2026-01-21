@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-01-21
+
+### Added
+-   **Localization**:
+    -   Translated the entire application into European Portuguese (pt-PT).
+    -   Updated `index.html` lang attribute.
+    -   Localized UI labels (buttons, dropdowns) and accessibility labels (`aria-label`).
+-   **Features**:
+    -   **Hint System**: Implemented a backtracking Sudoku solver to provide intelligent hints. The hint fills the selected cell with the correct value or finds the first error/empty cell if no specific cell is selected.
+    -   **Victory Condition**: Added logic to detect when the game is successfully completed (no errors and no empty cells).
+    -   **Victory Modal**: Added an accessible high-contrast modal that appears upon winning, allowing the user to start a new game immediately.
+    -   **Persistence**: Implemented `localStorage` persistence using Zustand's `persist` middleware. Game state (grid, history, difficulty, win state) is now saved across page reloads.
+
 ## [0.1.1] - 2026-01-20
 
 ### Added
