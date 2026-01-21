@@ -9,22 +9,22 @@ export const Controls: React.FC = () => {
   const cellIsSelected = selectedCell !== null;
 
   // --- Action Button Styles ---
-  const baseButton = "px-4 h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-md transition-all duration-300 font-bold text-lg";
+  const baseButton = "px-1 h-10 md:h-12 flex items-center justify-center rounded-lg shadow-sm hover:shadow-md transition-all duration-300 font-bold text-base md:text-lg";
   const secondaryButton = `${baseButton} bg-gray-800 text-white hover:bg-black border-2 border-black`;
   const disabledButton = "opacity-40 cursor-not-allowed grayscale";
 
   // --- Render ---
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-2 p-1 w-full">
       {/* --- Action Buttons --- */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-3 gap-2">
         <button
             onClick={toggleNoteMode}
-            className={`${baseButton} ${isNoteMode ? 'bg-yellow-500 text-black border-yellow-800 ring-4 ring-yellow-400' : 'bg-gray-200 text-gray-800 border-gray-400 hover:bg-gray-300'}`}
+            className={`${baseButton} ${isNoteMode ? 'bg-yellow-500 text-black border-yellow-800 ring-2 ring-yellow-400' : 'bg-gray-200 text-gray-800 border-gray-400 hover:bg-gray-300'}`}
             aria-label={isNoteMode ? "Modo de Notas Ligado" : "Modo de Notas Desligado"}
             aria-pressed={isNoteMode}
         >
-            {isNoteMode ? "Notas: ON ✎" : "Notas: OFF"}
+            {isNoteMode ? "Notas: ON" : "Notas"}
         </button>
         <button
           onClick={undo}
@@ -52,7 +52,7 @@ export const Controls: React.FC = () => {
             onClick={() => setCellValue(num)}
             disabled={!cellIsSelected}
             aria-label={`Definir célula selecionada como ${num}`}
-            className={`w-full min-w-[50px] h-14 text-2xl font-bold border-2 border-gray-800 rounded-lg hover:bg-gray-100 transition-colors focus:ring-4 focus:ring-blue-500 ${!cellIsSelected ? disabledButton : ''}`}
+            className={`w-full min-w-[40px] h-10 md:h-12 text-xl md:text-2xl font-bold border-2 border-gray-800 rounded-lg hover:bg-gray-100 transition-colors focus:ring-4 focus:ring-blue-500 ${!cellIsSelected ? disabledButton : ''}`}
           >
             {num}
           </button>
@@ -62,7 +62,7 @@ export const Controls: React.FC = () => {
             onClick={() => setCellValue(null)}
             disabled={!cellIsSelected}
             aria-label="Limpar valor da célula selecionada"
-            className={`w-full col-span-2 h-14 text-xl font-bold border-4 border-red-700 text-red-700 rounded-lg hover:bg-red-50 transition-colors ${!cellIsSelected ? disabledButton : ''}`}
+            className={`w-full col-span-2 h-10 md:h-12 text-lg md:text-xl font-bold border-4 border-red-700 text-red-700 rounded-lg hover:bg-red-50 transition-colors ${!cellIsSelected ? disabledButton : ''}`}
         >
             Limpar
         </button>
@@ -70,7 +70,7 @@ export const Controls: React.FC = () => {
          <button
             onClick={getHint}
             aria-label="Obter dica"
-            className={`${baseButton} w-full h-14 bg-green-800 text-white hover:bg-green-900 border-2 border-green-950`}
+            className={`${baseButton} w-full h-10 md:h-12 bg-green-800 text-white hover:bg-green-900 border-2 border-green-950`}
         >
             Dica
         </button>

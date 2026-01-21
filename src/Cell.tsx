@@ -28,8 +28,12 @@ export const Cell: React.FC<CellProps> = ({
     'flex',
     'items-center',
     'justify-center',
-    'w-[60px]',
-    'h-[60px]',
+    'w-10', // Default 40px
+    'h-10',
+    'md:w-11', // Optimized for 842px width (44px)
+    'md:h-11',
+    'lg:w-[60px]', // Large screens 60px
+    'lg:h-[60px]',
     'cursor-pointer',
     'transition-colors',
     'duration-150',
@@ -38,7 +42,7 @@ export const Cell: React.FC<CellProps> = ({
 
   // Font size - large for values, handled differently for notes
   if (value !== null) {
-      cellClasses.push('text-3xl');
+      cellClasses.push('text-xl md:text-2xl lg:text-3xl');
   }
 
   if (isGiven) {

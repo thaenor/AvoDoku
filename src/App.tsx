@@ -78,61 +78,63 @@ function App() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-bg-main min-w-[768px] p-4">
-      {/* Header */}
-      <header className="mb-8 text-center">
-        <h1 className="text-5xl font-extrabold text-text-primary mb-4">
-          AvoDoku
-        </h1>
-        <div className="flex items-center space-x-4 justify-center">
-          <div className="px-6 py-3 rounded-lg bg-gray-800 text-white font-mono text-xl border-2 border-black shadow-lg" aria-label={`Tempo decorrido: ${formatTime(elapsedTime)}`}>
-            {formatTime(elapsedTime)}
-          </div>
-          <button
-            onClick={() => setIsLeaderboardOpen(true)}
-            className="px-6 py-3 rounded-lg bg-purple-700 text-white hover:bg-purple-800 transition-colors shadow-lg font-bold text-lg border-2 border-purple-900"
-            aria-label="Ver histórico de jogos"
-          >
-            Histórico
-          </button>
-          <button
-            onClick={handleNewGame}
-            className="px-6 py-3 rounded-lg bg-blue-700 text-white hover:bg-blue-800 transition-colors shadow-lg font-bold text-lg border-2 border-blue-900"
-            aria-label="Começar novo jogo"
-          >
-            Novo Jogo
-          </button>
-          <select
-            value={selectedDifficulty}
-            onChange={handleDifficultyChange}
-            className="px-6 py-3 rounded-lg bg-white text-black border-4 border-gray-900 focus:outline-none focus:ring-4 focus:ring-blue-500 transition-colors shadow-lg font-bold text-lg"
-            aria-label="Selecionar dificuldade"
-          >
-            <option value="Easy">Fácil</option>
-            <option value="Medium">Médio</option>
-            <option value="Hard">Difícil</option>
-          </select>
+    <div className="flex flex-col md:flex-row items-center justify-center min-dh-screen h-screen bg-bg-main w-full p-1 gap-2 overflow-hidden">
+
+      {/* --- Left Column: Board --- */}
+      <main className="flex-shrink-0 flex items-center justify-center h-full">
+        <div className="scale-90 md:scale-100 transition-transform">
+             <Board />
         </div>
-      </header>
+      </main>
 
-      <div className="flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8 w-full max-w-6xl">
-        {/* Main Content (Board) */}
-        <main className="my-6">
-          <Board />
-        </main>
+      {/* --- Right Column: Header Info & Controls --- */}
+      <aside className="flex flex-col items-center justify-center w-full max-w-sm space-y-1 h-full overflow-y-auto">
 
-        {/* Controls (Number Pad) */}
-        <section className="my-6 lg:mt-6 w-full max-w-sm">
-          <Controls />
-        </section>
-      </div>
+        {/* HUD: Timer & Difficulty Group */}
+        <div className="w-full bg-gray-100 p-2 rounded-xl border border-gray-300 shadow-sm flex flex-col gap-2">
+             <div className="flex justify-between items-center bg-gray-800 text-white rounded-lg p-1 px-3 shadow-inner border border-gray-900">
+                <span className="text-xs uppercase tracking-wider text-gray-400 font-bold">Tempo</span>
+                <span className="font-mono text-xl font-bold tracking-widest" aria-label={`Tempo decorrido: ${formatTime(elapsedTime)}`}>
+                    {formatTime(elapsedTime)}
+                </span>
+             </div>
 
-      {/* Footer */}
-      <footer className="mt-8 text-center">
-        <p className="text-lg font-medium text-gray-900">
-          Selecione uma célula, depois escolha um número ou use os controlos abaixo.
-        </p>
-      </footer>
+             <div className="grid grid-cols-2 gap-1">
+                <select
+                    value={selectedDifficulty}
+                    onChange={handleDifficultyChange}
+                    className="w-full px-2 py-1 rounded-lg bg-white text-black border border-gray-400 font-bold text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    aria-label="Selecionar dificuldade"
+                >
+                    <option value="Easy">Fácil</option>
+                    <option value="Medium">Médio</option>
+                    <option value="Hard">Difícil</option>
+                </select>
+
+                <button
+                    onClick={() => setIsLeaderboardOpen(true)}
+                    className="w-full px-2 py-1 rounded-lg bg-purple-600 text-white font-bold text-sm hover:bg-purple-700 border border-purple-800 transition-colors"
+                    aria-label="Ver histórico de jogos"
+                >
+                    Histórico
+                </button>
+             </div>
+
+            {/* New Game Button - Integrated */}
+            <button
+                onClick={handleNewGame}
+                className="w-full py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-sm font-bold text-lg border-2 border-blue-800 uppercase tracking-wide"
+                aria-label="Começar novo jogo"
+            >
+                Novo Jogo
+            </button>
+        </div>
+
+        {/* Controls Component */}
+        <div className="w-full flex-grow flex items-center">
+             <Controls />
+        </div>
+      </aside>
 
       {/* Leaderboard Modal */}
       <LeaderboardModal
