@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.7] - 2026-01-29
+
+### Changed
+-   **Immediate Error Checking**:
+    -   Updated the core game logic to validate user input against the actual puzzle solution immediately.
+    -   Incorrect numbers (wrong placement) now turn red immediately upon entry.
+    -   **Persistent Errors**: Visual error indicators (red tiles) now persist until corrected, ensuring the user is always aware of mistakes on the board.
+    -   Refactored `checkErrors` to compare against the stored solution rather than just checking for row/column conflicts.
+-   **Performance & Stability**:
+    -   Optimized `Hint` system and error checking by storing the solution grid at the start of the game.
+    -   Fixed an issue where game state persistence would lose the solution data on reload, ensuring consistent error checking across sessions.
+    -   **Visual Fix**: Resolved an issue where the "Selected" state color (blue) masked the "Error" state color (red). Immediate errors are now clearly visible even while the cell remains selected.
+
 ## [0.1.6] - 2026-01-21
 
 ### Added

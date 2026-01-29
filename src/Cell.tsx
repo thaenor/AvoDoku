@@ -54,7 +54,16 @@ export const Cell: React.FC<CellProps> = ({
   // --- State Styles ---
   if (isSelected) {
     // High contrast selection: dark background, white text, and a thick inset ring
-    cellClasses.push('bg-cell-selected', '!text-cell-selected-text', 'ring-4', 'ring-inset', 'ring-blue-600', 'z-10');
+    cellClasses.push('ring-4', 'ring-inset', 'ring-blue-600', 'z-10');
+
+    if (isError) {
+        // Error state takes precedence visually even when selected
+        // We use !important on text color to override the default text colors set above
+        cellClasses.push('bg-error-bg', '!text-error-text');
+    } else {
+        // Standard selection
+        cellClasses.push('bg-cell-selected', '!text-cell-selected-text');
+    }
   } else if (isError) {
     cellClasses.push('bg-error-bg', 'text-error-text');
   } else if (isHighlighted) {

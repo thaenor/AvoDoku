@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) navigator.serviceWorker.register('/AvoDoku/dev-sw.js?dev-sw', { scope: '/AvoDoku/', type: 'classic' })
