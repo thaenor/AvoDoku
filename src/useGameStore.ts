@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { attemptSolve } from './utils/sudokuIterativeSolver';
 
 // --- Types ---
 type Cell = {
@@ -34,7 +35,7 @@ type GameState = {
 
 type GameActions = {
   selectCell: (row: number, col: number) => void;
-  setCellValue: (value: number | null) => void;
+  setCellValue: (value: number | null, asNote?: boolean) => void;
   undo: () => void;
   redo: () => void;
   newGame: (difficulty: Difficulty) => void;
@@ -76,6 +77,34 @@ const fillGrid = (board: number[][]): boolean => {
     return true;
 };
 
+const countSolutions = (board: number[][]): number => {
+  let count = 0;
+
+  const solve = (r: number, c: number): boolean => {
+    if (r === 9) {
+      count++;
+      return count > 1; // Stop if we found more than 1 solution
+    }
+
+    const nextR = c === 8 ? r + 1 : r;
+    const nextC = c === 8 ? 0 : c + 1;
+
+    if (board[r][c] !== 0) return solve(nextR, nextC);
+
+    for (let num = 1; num <= 9; num++) {
+      if (isValidMove(board, r, c, num)) {
+        board[r][c] = num;
+        if (solve(nextR, nextC)) return true; // Propagate stop signal
+        board[r][c] = 0; // Backtrack
+      }
+    }
+    return false;
+  };
+
+  solve(0, 0);
+  return count;
+};
+
 /**
  * Generates an empty 9x9 Sudoku grid.
  */
@@ -112,16 +141,52 @@ const generateNewPuzzle = (difficulty: Difficulty): { grid: Grid; solution: numb
     if (difficulty === 'Medium') cellsToRemove = 50;
     if (difficulty === 'Hard') cellsToRemove = 60;
 
-    let attempts = 0;
-    while (cellsToRemove > 0 && attempts < 200) {
-        const r = Math.floor(Math.random() * 9);
-        const c = Math.floor(Math.random() * 9);
+    // Create a shuffled list of symmetric pairs (center cell handles itself)
+    const positions = [];
+    for (let r = 0; r <= 4; r++) {
+      for (let c = 0; c < 9; c++) {
+        // Only include the first half of the symmetric pairs
+        if (r === 4 && c > 4) continue;
+        positions.push({ r, c });
+      }
+    }
+    positions.sort(() => Math.random() - 0.5);
 
-        if (raw[r][c] !== 0) {
-            raw[r][c] = 0;
-            cellsToRemove--;
-        }
-        attempts++;
+    // Try to remove cells symmetrically while maintaining a unique solution
+    for (const { r, c } of positions) {
+      if (cellsToRemove <= 0) break;
+
+      const symR = 8 - r;
+      const symC = 8 - c;
+      const isCenter = (r === 4 && c === 4);
+
+      const val1 = raw[r][c];
+      const val2 = raw[symR][symC];
+
+      // Temporarily remove both (or just one if it's the center)
+      raw[r][c] = 0;
+      if (!isCenter) raw[symR][symC] = 0;
+
+      // Check if solution is still unique
+      const checkBoard = raw.map((row) => [...row]);
+
+      let isValidRemoval = false;
+      if (countSolutions(checkBoard) === 1) {
+          // It is unique. Now check if it matches target difficulty logic.
+          if (attemptSolve(checkBoard, difficulty)) {
+              isValidRemoval = true;
+          }
+      }
+
+      if (!isValidRemoval) {
+        // Not unique OR too hard for this difficulty level -> backtrack
+        raw[r][c] = val1;
+        if (!isCenter) raw[symR][symC] = val2;
+      } else {
+        // Valid!
+        cellsToRemove--;
+        if (!isCenter) cellsToRemove--;
+      }
     }
 
     // 3. Convert to state Grid
@@ -149,13 +214,13 @@ export const useGameStore = create<GameState & GameActions>()(
     (set, get) => ({
       // --- Initial State ---
       ...(() => {
-        const { grid, solution } = generateNewPuzzle('Medium');
+        const { grid, solution } = generateNewPuzzle('Easy');
         return { grid, solution };
       })(),
       selectedCell: null,
       history: [],
       future: [],
-      difficulty: 'Medium',
+      difficulty: 'Easy',
       isWon: false,
       elapsedTime: 0,
       completedGames: [],
@@ -170,9 +235,11 @@ export const useGameStore = create<GameState & GameActions>()(
         set((state) => ({ isNoteMode: !state.isNoteMode }));
       },
 
-      setCellValue: (value) => {
+      setCellValue: (value, asNote) => {
         const { grid, selectedCell, isNoteMode } = get();
         if (!selectedCell) return;
+
+        const effectiveNoteMode = asNote !== undefined ? asNote : isNoteMode;
 
         const { row, col } = selectedCell;
         const cell = grid[row][col];
@@ -197,7 +264,7 @@ export const useGameStore = create<GameState & GameActions>()(
                 newGrid[row][col].notes = [];
             }
         } else {
-            if (isNoteMode) {
+            if (effectiveNoteMode) {
                  // Note Mode Logic
                  if (newGrid[row][col].value === null) { // Only edit notes if cell is empty
                      const notes = newGrid[row][col].notes;
@@ -218,7 +285,7 @@ export const useGameStore = create<GameState & GameActions>()(
         // Only checking errors if we set a real value, not a note.
         // Although checking errors doesn't hurt, it might mark errors.
         // Notes shouldn't trigger "Error" state on the cell itself usually.
-        if (!isNoteMode) {
+        if (!effectiveNoteMode && value !== null) {
              get().checkErrors();
         }
       },
@@ -369,7 +436,8 @@ export const useGameStore = create<GameState & GameActions>()(
             selectCell(targetRow, targetCol);
           }
 
-          get().setCellValue(solution[targetRow][targetCol]);
+          // Force value mode (false) for hints
+          get().setCellValue(solution[targetRow][targetCol], false);
         }
       },
     }),

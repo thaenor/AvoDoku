@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.7] - 2026-01-29
 
 ### Changed
+-   **Puzzle Generation**:
+    -   Implemented a **Unique Solution Validator**.
+    -   The game now guarantees that every generated puzzle has exactly one valid solution. This prevents ambiguous situations where multiple numbers could theoretically fit in the same spot.
+    -   **Human-Style Difficulty Grading**: Puzzles are now graded based on the logic required to solve them, rather than just the number of clues.
+        -   **Easy**: Guarantees the puzzle can be solved using only "Singles" (no guessing or complex look-ahead required).
+        -   **Medium**: Requires slightly more complex scanning (Hidden Singles).
+        -   **Hard**: Unrestricted logic (but still guarantees a unique solution).
+    -   **Symmetric Generation**: Puzzles now respect 180-degree rotational symmetry. If a cell is empty at position [r, c], its symmetric partner at [8-r, 8-c] will also be empty. This mimics the professional style of newspaper Sudoku puzzles and improves readability.
+    -   Replaced the naive "random removal" algorithm with a safer "remove and verify" approach.
 -   **Immediate Error Checking**:
     -   Updated the core game logic to validate user input against the actual puzzle solution immediately.
     -   Incorrect numbers (wrong placement) now turn red immediately upon entry.
@@ -17,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     -   Optimized `Hint` system and error checking by storing the solution grid at the start of the game.
     -   Fixed an issue where game state persistence would lose the solution data on reload, ensuring consistent error checking across sessions.
     -   **Visual Fix**: Resolved an issue where the "Selected" state color (blue) masked the "Error" state color (red). Immediate errors are now clearly visible even while the cell remains selected.
+-   **Configuration**:
+    -   Changed the default game difficulty from "Medium" to "Easy" to better accommodate new players.
 
 ## [0.1.6] - 2026-01-21
 
